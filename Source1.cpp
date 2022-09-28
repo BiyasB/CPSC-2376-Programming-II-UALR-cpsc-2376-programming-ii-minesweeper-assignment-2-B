@@ -5,19 +5,25 @@
 /*Game Constants*/
 const int gameBoardSize{ 10 };
 enum class gamePieces { hiddenEmpty, revealedEmpty, hiddenMine, revealedMine };
+struct gameSlot
+{
+	gamePieces piece{ gamePieces::hiddenEmpty };
+	bool flagged{ false };
+};
+
 
 /*GUI Functions*/
 void splashScreen();
-void displayGameState(const std::vector<gamePieces>& gameBoard, bool revealMines = false);
-void displayGameDone(const std::vector<gamePieces>& gameBoard);
+void displayGameState(const  std::vector<gameSlot>& gameBoard, bool revealMines = false);
+void displayGameDone(const  std::vector<gameSlot>& gameBoard);
 
 /* Engine Functions*/
 
-std::vector<gamePieces> boardSetup();
-void changeGameState(std::vector<gamePieces>& gameBoard);
-bool isGameDone(const std::vector<gamePieces>& gameBoard);
+ std::vector<gameSlot> boardSetup();
+void changeGameState( std::vector<gameSlot>& gameBoard);
+bool isGameDone(const  std::vector<gameSlot>& gameBoard);
 
-int countMines(int row, int column, const std::vector<gamePieces>& gameBoard);
+int countMines(int row, int column, const  std::vector<gameSlot>& gameBoard);
 
 int boardIndex(int row, int column);
 
@@ -27,7 +33,7 @@ int main()
 	char playAgain{ 'y' };
 	while (playAgain == 'y' || playAgain == 'Y')
 	{
-		std::vector<gamePieces>& gameBoard{ boardSetup() };
+		 std::vector<gameSlot>& gameBoard{ boardSetup() };
 		while (!isGameDone(gameBoard))
 		{
 			displayGameState(gameBoard);
@@ -53,7 +59,7 @@ void splashScreen()
 	system("PAUSE");
 }
 
-void displayGameState(const std::vector<gamePieces>& gameBoard, bool revealMines)
+void displayGameState(const  std::vector<gameSlot>& gameBoard, bool revealMines)
 {
 	char rowName{ 'A' };
 	int colName{ 1 };
@@ -73,7 +79,7 @@ void displayGameState(const std::vector<gamePieces>& gameBoard, bool revealMines
 		rowName++;
 		for (int column{ 0 }; column < gameBoardSize; column++)
 		{
-			switch (gameBoard[boardIndex(row, column)])
+			switch (gameBoard[boardIndex(row, column)].piece)
 			{
 			case gamePieces::hiddenEmpty:
 				std::cout << "- ";
@@ -102,12 +108,12 @@ void displayGameState(const std::vector<gamePieces>& gameBoard, bool revealMines
 	}
 }
 
-void displayGameDone(const std::vector<gamePieces>& gameBoard)
+void displayGameDone(const  std::vector<gameSlot>& gameBoard)
 {
 	displayGameState(gameBoard, true);
 	for (auto slot : gameBoard)
 	{
-		if (slot == gamePieces::revealedMine)
+		if (slot.piece == gamePieces::revealedMine)
 		{
 			std::cout << "The mine exploded.... You are dead!!!!\n";
 			std::cout << "Better luck next time!";
@@ -118,9 +124,9 @@ void displayGameDone(const std::vector<gamePieces>& gameBoard)
 	std::cout << "You are loved by all! Use your power for good!";
 }
 
-std::vector<gamePieces> boardSetup()
+ std::vector<gameSlot> boardSetup()
 {
-	std::vector<gamePieces> gameBoard(gameBoardSize * gameBoardSize);
+	 std::vector<gameSlot> gameBoard(gameBoardSize * gameBoardSize);
 
 	static std::random_device seed;
 	static std::default_random_engine e(seed());
@@ -130,11 +136,11 @@ std::vector<gamePieces> boardSetup()
 	{
 		if (mined(e))
 		{
-			slot = gamePieces::hiddenMine;
+			slot.piece = gamePieces::hiddenMine;
 		}
 		else
 		{
-			slot = gamePieces::hiddenEmpty;
+			slot.piece = gamePieces::hiddenEmpty;
 		}
 	}
 	return gameBoard;
@@ -145,7 +151,7 @@ int boardIndex(int row, int column)
 	return row * gameBoardSize + column;
 }
 
-void changeGameState(std::vector<gamePieces>& gameBoard)
+void changeGameState( std::vector<gameSlot>& gameBoard)
 {
 
 	char row{ 'Z' };
@@ -165,9 +171,9 @@ void changeGameState(std::vector<gamePieces>& gameBoard)
 			std::cin >> column;
 			column--;
 		}
-	} while (gameBoard[boardIndex(numRow, column)] == gamePieces::revealedEmpty);
+	} while (gameBoard[boardIndex(numRow, column)].piece == gamePieces::revealedEmpty);
 
-	switch (gameBoard[boardIndex(numRow, column)])
+	switch (gameBoard[boardIndex(numRow, column)].piece)
 	{
 	case gamePieces::hiddenEmpty:
 		gameBoard[boardIndex(numRow, column)] = gamePieces::revealedEmpty;
@@ -178,12 +184,12 @@ void changeGameState(std::vector<gamePieces>& gameBoard)
 	}
 }
 
-bool isGameDone(const std::vector<gamePieces>& gameBoard)
+bool isGameDone(const  std::vector<gameSlot>& gameBoard)
 {
 	bool stillEmpty{ true };
 	for (auto slot : gameBoard)
 	{
-		switch (slot)
+		switch (slot.piece)
 		{
 		case gamePieces::hiddenEmpty:
 			stillEmpty = false;
@@ -196,7 +202,7 @@ bool isGameDone(const std::vector<gamePieces>& gameBoard)
 	return stillEmpty;
 }
 
-int countMines(int row, int column, const std::vector<gamePieces>& gameBoard)
+int countMines(int row, int column, const  std::vector<gameSlot>& gameBoard)
 {
 	int mineCount{ 0 };
 	for (int neighborRow{ -1 }; neighborRow <= 1; neighborRow++)
@@ -215,4 +221,3 @@ int countMines(int row, int column, const std::vector<gamePieces>& gameBoard)
 	}
 	return mineCount;
 }
-//commit test

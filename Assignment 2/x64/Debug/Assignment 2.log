@@ -1,0 +1,11 @@
+﻿  Source.cpp
+C:\Users\bbanerjee\source\repos\CPSC-2376-Programming-II-UALR-cpsc-2376-programming-ii-minesweeper-assignment-2-B\Assignment 2\Source.cpp(119,126): error C2440: 'initializing': cannot convert from '_InIt' to 'std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>'
+          with
+          [
+              _InIt=std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<gameSlot>>>
+          ]
+          and
+          [
+              _Ty=gameSlot
+          ]
+C:\Users\bbanerjee\source\repos\CPSC-2376-Programming-II-UALR-cpsc-2376-programming-ii-minesweeper-assignment-2-B\Assignment 2\Source.cpp(119,37): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
